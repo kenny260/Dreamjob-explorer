@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DreamJob Explorer</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>DreamJob Explorer</h1>
+    <form method="post">
+        <label>Dream Job Title:</label>
+        <input type="text" name="job_title" required>
+        <br><br>
+        <label>Your Skills (comma separated):</label>
+        <input type="text" name="user_skills" required>
+        <br><br>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if result %}
+        {% if result.error %}
+            <p style="color:red;">{{ result.error }}</p>
+        {% else %}
+            <h2>Results for {{ result.job_title }}</h2>
+            <p><strong>Required Skills:</strong> {{ result.required_skills | join(", ") }}</p>
+            <p><strong>Your Skills:</strong> {{ result.user_skills | join(", ") }}</p>
+            <p><strong>Missing Skills:</strong> {{ result.missing_skills | join(", ") }}</p>
+            <p><strong>Recommended Subjects:</strong> {{ result.recommended_subjects | join(", ") }}</p>
+            <h3>Expected Salary</h3>
+            <ul>
+                {% for region, info in result.salary_info.items() %}
+                    <li>{{ region.capitalize() }}: 
+                        {% if info.min %}
+                            {{ info.min }} - {{ info.max }} {{ info.currency }}
+                        {% else %}
+                            Data not available
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
+
